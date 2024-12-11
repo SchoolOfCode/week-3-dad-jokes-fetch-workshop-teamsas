@@ -55,22 +55,49 @@ const jokes = [
   },
 ];
 
-// Main function to retrieve and display a new joke
-function getAndDisplayNewJoke() {
-  const joke = retrieveJoke();
+/* TASK:
+-Instead of using hard-coded jokes, we need to retrieve a random joke
+from the dadJokes API, and incorporate these in the HTML rendering.
+-Function 1 and 3 can stay the same (for the most part)
+-Mainly looking to change function 2
+
+TASK 1:
+Fetch the API from the given endpoint. CHECK
+TASK 2:
+Process the API response so that we only get the joke as a string.
+TASK 3:
+Display that string in our HTML joke card (this is already done for us, so we would only need to update the return value of retrieveJoke())
+
+
+*/
+
+// 1 - Main function to retrieve and display a new joke
+async function getAndDisplayNewJoke() {
+  const joke = await retrieveJoke();
   displayJoke(joke);
 }
 
-// Function to retrieve a random joke
-function retrieveJoke() {
-  const randomIndex = Math.floor(Math.random() * jokes.length);
-  return jokes[randomIndex];
+// 2 - Function to retrieve a random joke
+async function retrieveJoke() {
+  try {
+    let response = await fetch("https://icanhazdadjoke.com/", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    let data = await response.json();
+    let extractedJoke = data.joke;
+    console.log(extractedJoke);
+    return extractedJoke;
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+  }
 }
 
-// Function to update the DOM with the provided joke
-function displayJoke(joke) {
+// 3 - Function to update the DOM with the provided joke
+function displayJoke(argument) {
   const jokeElement = document.getElementById("joke");
-  jokeElement.textContent = joke.joke;
+  jokeElement.textContent = argument;
 }
 
 // Waits for the DOM to be fully loaded and then displays an initial joke.
